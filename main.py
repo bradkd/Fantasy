@@ -131,8 +131,8 @@ def print_league_scores(data):
     output.append("----------Projected Scores-----------")
 
     for i in range(0, len(data), 2):
-        output.append(f"{data[i][0]:>{max_left}}{" | "}{data[i+1][0]:<{max_right}}")
-        output.append(f"{data[i][2]:>{max_left}}{" | "}{data[i+1][2]:<{max_right}}")
+        output.append(f"{str(data[i][0]):>{max_left}}{" | "}{str(data[i+1][0]):<{max_right}}")
+        output.append(f"{str(data[i][2]):>{max_left}}{" | "}{str(data[i+1][2]):<{max_right}}")
 
 
     output.append("Projected Median Score: " + str(round(np.median([row[2] for row in data]), 2)))
@@ -141,8 +141,8 @@ def print_league_scores(data):
     output.append("-----------Actual Scores------------")
 
     for i in range(0, len(data), 2):
-        output.append(f"{data[i][0]:>{max_left}}{" | "}{data[i+1][0]:<{max_right}}")
-        output.append(f"{data[i][1]:>{max_left}}{" | "}{data[i+1][1]:<{max_right}}")
+        output.append(f"{str(data[i][0]):>{max_left}}{" | "}{str(data[i+1][0]):<{max_right}}")
+        output.append(f"{str(data[i][1]):>{max_left}}{" | "}{str(data[i+1][1]):<{max_right}}")
 
 
     output.append("Actual Median Score: " + str(round(np.median([row[1] for row in data]), 2)))
