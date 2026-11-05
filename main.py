@@ -8,10 +8,6 @@ from fastapi import FastAPI
 
 app = FastAPI(title="Fantasy")
 
-@app.get("/")
-def home():
-    return {"status": "Online", "message": "Visit /league_info for league data."}
-
 @app.get("/league_info")
 def league_info():
     # establish league connection via ESPN api
