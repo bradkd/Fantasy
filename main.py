@@ -126,26 +126,28 @@ def print_league_scores(data):
     max_right = max(len(el) for el in away_teams)
 
     # print data
-
-    print("----------Projected Scores-----------")
+    output = []
+    output.append("----------Projected Scores-----------")
 
     for i in range(0, len(data), 2):
-        print(f"{data[i][0]:>{max_left}}{" | "}{data[i+1][0]:<{max_right}}")
-        print(f"{data[i][2]:>{max_left}}{" | "}{data[i+1][2]:<{max_right}}")
+        output.append(f"{data[i][0]:>{max_left}}{" | "}{data[i+1][0]:<{max_right}}")
+        output.append(f"{data[i][2]:>{max_left}}{" | "}{data[i+1][2]:<{max_right}}")
 
-    print()
-    print("Projected Median Score: " + str(round(np.median([row[2] for row in data]), 2)))
-    print()
+    output.append("\n")
+    output.append("Projected Median Score: " + str(round(np.median([row[2] for row in data]), 2)))
+    output.append("\n")
 
     print("-----------Actual Scores------------")
 
     for i in range(0, len(data), 2):
-        print(f"{data[i][0]:>{max_left}}{" | "}{data[i+1][0]:<{max_right}}")
-        print(f"{data[i][1]:>{max_left}}{" | "}{data[i+1][1]:<{max_right}}")
+        output.append(f"{data[i][0]:>{max_left}}{" | "}{data[i+1][0]:<{max_right}}")
+        output.append(f"{data[i][1]:>{max_left}}{" | "}{data[i+1][1]:<{max_right}}")
 
-    print()
-    print("Actual Median Score: " + str(round(np.median([row[1] for row in data]), 2)))
-    print()
+    output.append("\n")
+    output.append("Actual Median Score: " + str(round(np.median([row[1] for row in data]), 2)))
+    output.append("\n")
+
+    return output
 
 def print_league_standings(league, data):
 
