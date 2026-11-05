@@ -30,7 +30,9 @@ def league_info():
 
     # print data
     output.append(print_league_standings(league, data))
+    output.append("")
     output.append(print_league_scores(data))
+    output.append("")
     output.append(print_projected_league_standings(league, data))
 
 
@@ -134,9 +136,9 @@ def print_league_scores(data):
         output.append(f"{str(data[i][0]):>{max_left}}{" | "}{str(data[i+1][0]):<{max_right}}")
         output.append(f"{str(data[i][2]):>{max_left}}{" | "}{str(data[i+1][2]):<{max_right}}")
 
-
+    output.append("")
     output.append("Projected Median Score: " + str(round(np.median([row[2] for row in data]), 2)))
-
+    output.append("")
 
     output.append("-----------Actual Scores------------")
 
@@ -144,8 +146,9 @@ def print_league_scores(data):
         output.append(f"{str(data[i][0]):>{max_left}}{" | "}{str(data[i+1][0]):<{max_right}}")
         output.append(f"{str(data[i][1]):>{max_left}}{" | "}{str(data[i+1][1]):<{max_right}}")
 
-
+    output.append("")
     output.append("Actual Median Score: " + str(round(np.median([row[1] for row in data]), 2)))
+    output.append("")
 
     return "\n".join(output)
 
