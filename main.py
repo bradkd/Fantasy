@@ -147,7 +147,6 @@ def print_league_scores(data):
 
     output.append("Actual Median Score: " + str(round(np.median([row[1] for row in data]), 2)))
 
-
     return "\n".join(output)
 
 def print_league_standings(league, data):
@@ -155,34 +154,38 @@ def print_league_standings(league, data):
     # sort by number of wins
     data = sorted(data, key=lambda x: x[3], reverse=True)
 
+    output = []
     # formatting
     title = f"--- {league.settings.name} Standings ---"
-    print(title)
+    output.append(title)
     t_len = len(title)
 
     # print data
     for i, team in enumerate(data):
         length = t_len - len(team[0])
         win_loss = "(" + str(team[3]) + "-" + str(team[4]) + ")"
-        print(f"{i + 1}. {team[0]}{win_loss:>{length}}")
-    print()
+        output.append(f"{str(i + 1)}. {team[0]}{win_loss:>{length}}")
+
+    return "\n".join(output)
 
 def print_projected_league_standings(league, data):
 
     # sort by number of projected wins
     data = sorted(data, key=lambda x: x[5], reverse=True)
 
+    output = []
     # formatting
-    title = f"--- League Projected Standings ---"
-    print(title)
+    title = f"--- Projected League Standings ---"
+    output.append(title)
     t_len = len(title)
 
     # print data
     for i, team in enumerate(data):
         length = t_len - len(team[0])
         win_loss = "(" + str(team[5]) + "-" + str(team[6]) + ")"
-        print(f"{i + 1}. {team[0]}{win_loss:>{length}}")
-    print()
+        output.append(f"{str(i + 1)}. {team[0]}{win_loss:>{length}}")
+
+    return "\n".join(output)
 
 
 def get_position_summary(league, week):
