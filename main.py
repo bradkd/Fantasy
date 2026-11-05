@@ -5,6 +5,7 @@ from datetime import datetime
 from collections import defaultdict
 import pandas as pd
 from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse
 
 app = FastAPI(title="Fantasy")
 
@@ -12,7 +13,7 @@ app = FastAPI(title="Fantasy")
 def home():
     return {"status": "Online", "message": "Visit /league_info for league data."}
 
-@app.get("/league_info")
+@app.get("/league_info", response_class=PlainTextResponse)
 def league_info():
     # establish league connection via ESPN api
     LEAGUE_ID = 1347842310
@@ -38,7 +39,7 @@ def league_info():
     #pos_scores.to_csv('Scoring by Position.csv', index=False)
 
     #print(pos_scores)
-    return output
+    return "\n".join(output)
 
 def get_league_data(league, week):
 
@@ -133,21 +134,21 @@ def print_league_scores(data):
         output.append(f"{data[i][0]:>{max_left}}{" | "}{data[i+1][0]:<{max_right}}")
         output.append(f"{data[i][2]:>{max_left}}{" | "}{data[i+1][2]:<{max_right}}")
 
-    output.append("\n")
-    output.append("Projected Median Score: " + str(round(np.median([row[2] for row in data]), 2)))
-    output.append("\n")
 
-    print("-----------Actual Scores------------")
+    output.append("Projected Median Score: " + str(round(np.median([row[2] for row in data]), 2)))
+
+
+    output.append("-----------Actual Scores------------")
 
     for i in range(0, len(data), 2):
         output.append(f"{data[i][0]:>{max_left}}{" | "}{data[i+1][0]:<{max_right}}")
         output.append(f"{data[i][1]:>{max_left}}{" | "}{data[i+1][1]:<{max_right}}")
 
-    output.append("\n")
-    output.append("Actual Median Score: " + str(round(np.median([row[1] for row in data]), 2)))
-    output.append("\n")
 
-    return output
+    output.append("Actual Median Score: " + str(round(np.median([row[1] for row in data]), 2)))
+
+
+    return "\n".join(output)
 
 def print_league_standings(league, data):
 
