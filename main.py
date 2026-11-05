@@ -22,20 +22,23 @@ def league_info():
 
     league = League(league_id=LEAGUE_ID, year=YEAR)
 
+    output = []
+
     # get league data
     data = get_league_data(league, WEEK)
 
     # print data
-    print()
-    print_league_standings(league, data)
-    print_league_scores(data)
-    print_projected_league_standings(league, data)
+    output.append(print_league_standings(league, data))
+    output.append(print_league_scores(data))
+    output.append(print_projected_league_standings(league, data))
+
+
 
     #pos_scores = get_position_summary(league, WEEK)
     #pos_scores.to_csv('Scoring by Position.csv', index=False)
 
     #print(pos_scores)
-    return data
+    return output
 
 def get_league_data(league, week):
 
