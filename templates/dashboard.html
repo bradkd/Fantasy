@@ -13,23 +13,22 @@
         <!-- Dashboard Header -->
         <div class="mb-6 flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Activity Log</h1>
-                <p class="text-sm text-slate-500">Live operational events from your application</p>
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Fantasy Dashboard</h1>
             </div>
-            <!-- Quick badge counting the list items dynamically -->
-            <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full">
-                {{ log_entries|length }} Total Events
-            </span>
         </div>
 
         <!-- Styled Container for the List -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <ul class="divide-y divide-slate-100">
                 
-                {% for entry in log_entries %}
-                <li class="px-6 py-4 hover:bg-slate-50 transition-colors flex items-start space-x-3">
-                    <!-- Modern accent indicator dot -->
-                    <span class="mt-2 h-2 w-2 rounded-full bg-indigo-500 shrink-0"></span>
+                {% for entry in log_entries.splitlines() %}
+		    {% set columns = row.split('|')%}
+		    {% if columns|length >= 2 %}
+		    <tr class="hover:bg-slate-50">
+        	        <td class="px-6 py-4">{{ columns[0]|trim }}</td>
+        		<td class="px-6 py-4">{{ columns[1]|trim }}</td>
+                    </tr>
+                    <li class="px-6 py-4 hover:bg-slate-50 transition-colors flex items-start space-x-3">
                     
                     <!-- The string prints here directly -->
                     <span class="text-sm font-medium text-slate-700 font-mono tracking-tight">
