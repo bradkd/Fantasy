@@ -30,6 +30,7 @@ def league_info():
     output.append(print_league_scores(data))
     output.append("")
     output.append(print_projected_league_standings(league, data))
+    output.append("")
     output.append(print_median_summary(data))
     output.append("")
 
@@ -195,7 +196,7 @@ def print_median_summary(data):
     # formatting
     output = []
 
-    title = f"--- Projected Scoring ---"
+    title = f"-------- Projected Scoring --------"
     output.append(title)
     t_len = len(title)
 
