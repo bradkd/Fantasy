@@ -186,6 +186,29 @@ def print_projected_league_standings(league, data):
 
     return "\n".join(output)
 
+def print_median_summary(data):
+
+    # sort by projected score
+    data = sorted(data, key=lambda x: x[2], reverse=True)
+
+    # formatting
+    output = []
+
+    title = f"--- Projected Scoring ---"
+    output.append(title)
+    t_len = len(title)
+
+    # print data
+    for i, team in enumerate(data):
+        length = t_len - len(team[0])
+        proj = "(" + str(team[2]) + ")"
+        output.append(f"{str(i + 1)}. {team[0]}{proj:>{length}}")
+
+        if i == 4:
+            output.append("--- Median ---")
+
+    return "\n".join(output)
+
 
 def get_position_summary(league, week):
 
