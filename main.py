@@ -4,16 +4,13 @@ from espn_api.football import League
 from datetime import datetime
 from collections import defaultdict
 import pandas as pd
-from fastapi import FastAPI, Request
-from fastapi.responses import PlainTextResponse, HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse
 
 app = FastAPI(title="Fantasy")
 
-templates = Jinja2Templates(directory="templates")
-
-@app.get("/", response_class=HTMLResponse)
-async def league_info(request: Request):
+@app.get("/league_info", response_class=PlainTextResponse)
+def league_info():
     # establish league connection via ESPN api
     LEAGUE_ID = 1347842310
     YEAR = 2026
@@ -34,9 +31,13 @@ async def league_info(request: Request):
     output.append("")
     output.append(print_projected_league_standings(league, data))
 
-    #output = "\n".join(output)
 
-    return templates.TemplateResponse(request=request, name="dashboard.html",context={"request": request, "log_entries": output})
+
+    #pos_scores = get_position_summary(league, WEEK)
+    #pos_scores.to_csv('Scoring by Position.csv', index=False)
+
+    #print(pos_scores)
+    return "\n".join(output)
 
 def get_league_data(league, week):
 
@@ -239,4 +240,3 @@ def week_number(date_string, date_format="%m-%d-%Y"):
 
 if __name__ == "__home__":
     home()
-
