@@ -30,7 +30,8 @@ def league_info():
     output.append(print_league_scores(data))
     output.append("")
     output.append(print_projected_league_standings(league, data))
-
+    output.append(print_median_summary(data))
+    output.append("")
 
 
     #pos_scores = get_position_summary(league, WEEK)
