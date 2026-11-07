@@ -34,7 +34,7 @@ async def league_info(request: Request):
     output.append("")
     output.append(print_projected_league_standings(league, data))
 
-    output = "\n".join(output)
+    #output = "\n".join(output)
 
     return templates.TemplateResponse(request=request, name="dashboard.html",context={"request": request, "log_entries": output})
 
