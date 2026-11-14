@@ -6,6 +6,8 @@ from collections import defaultdict
 import pandas as pd
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
+import requests
+
 
 app = FastAPI(title="Fantasy")
 
@@ -16,6 +18,7 @@ def league_info():
     YEAR = 2026
     START_DATE = "9-9-2026"
     WEEK = week_number(START_DATE)
+    SEASON = 2026
 
     league = League(league_id=LEAGUE_ID, year=YEAR)
 
@@ -33,12 +36,9 @@ def league_info():
     output.append("")
     output.append(print_median_summary(data))
     output.append("")
+    output.append(get_rankings(WEEK, SEASON))
+    output.append("")
 
-
-    #pos_scores = get_position_summary(league, WEEK)
-    #pos_scores.to_csv('Scoring by Position.csv', index=False)
-
-    #print(pos_scores)
     return "\n".join(output)
 
 def get_league_data(league, week):
@@ -211,42 +211,70 @@ def print_median_summary(data):
 
     return "\n".join(output)
 
+def get_rankings(WEEK, SEASON):
+    # 1. Fetch current NFL state (optional auto-week check)
+    host = "https://api." + "sleeper.app"
 
-def get_position_summary(league, week):
+    # 2. Fetch weekly stat projections for QB, RB, WR, TE
+    proj_path = f"/projections/nfl/{SEASON}/{WEEK}"
 
-    # dictionary to hold scores
-    manager_scores = defaultdict(lambda: defaultdict(float))
+    params = [
+        ("season_type", "regular"),
+        ("position[]", "QB"),
+        ("position[]", "RB"),
+        ("position[]", "WR"),
+        ("position[]", "TE"),
+        ("order_by", "pts_ppr")
+    ]
 
-    # iterate through all previous weeks
-    for week in range(0, 18):
+    resp = requests.get(host + proj_path, params=params)
+    if resp.status_code != 200:
+        print(f"Sleeper API Error {resp.status_code}: {resp.text}")
+        return
 
-        # iterate through each matchup for the given week
-        boxscores = league.box_scores(week)
-        for match in boxscores:
+    data = resp.json()
+    rows = []
 
-            # both home and away teams
-            for team in [match.home_team, match.away_team]:
+    for item in data:
+        player = item.get("player", {})
+        stats = item.get("stats", {})
 
-                # get player scores in the lineup for this team
-                team_name = team.team_name
-                lineup = (match.home_lineup if team == match.home_team else match.away_lineup)
+        full_name = f"{player.get('first_name', '')} {player.get('last_name', '')}".strip()
+        pos = player.get("position")
 
-                for player in lineup:
+        # Calculate custom Full-PPR points directly from projected stats
+        proj_ppr = (
+            stats.get("pass_yd", 0) * 0.04 +
+            stats.get("pass_td", 0) * 4.0 +
+            stats.get("pass_int", 0) * -2.0 +
+            stats.get("rush_yd", 0) * 0.1 +
+            stats.get("rush_td", 0) * 6.0 +
+            stats.get("rec_yd", 0) * 0.1 +
+            stats.get("rec", 0) * 1.0 +
+            stats.get("rec_td", 0) * 6.0 +
+            stats.get("fum_lost", 0) * -2.0
+        )
 
-                    # exclude bench slots
-                    if player.slot_position == 'BE':
-                        continue
+        if proj_ppr > 0:
+            rows.append({
+                "player_name": full_name,
+                "position": pos,
+                "proj_ppr": round(proj_ppr, 2)
+            })
 
-                    pos = player.position
-                    points = player.points
-                    manager_scores[team_name][pos] += points
+    df = pd.DataFrame(rows)
+    output = []
 
-    # convert to dataframe
-    df = pd.DataFrame(manager_scores).fillna(0).T
-    df['Total'] = df.sum(axis=1)
-    df = df.sort_values(by='Total', ascending=False)
+    for pos in ["QB", "RB", "WR", "TE"]:
+        output.append(f"\n------- {pos} PROJECTIONS (WEEK {WEEK}) -------")
 
-    return df
+        top_pos = df[df["position"] == pos].sort_values(by="proj_ppr", ascending=False).head(20)
+
+        for rank, row in enumerate(top_pos.itertuples(), start=1):
+
+            output.append(f"{rank:>2}. {row.player_name} {row.proj_ppr:.2f}")
+
+    return "\n".join(output)
 
 def week_number(date_string, date_format="%m-%d-%Y"):
 
