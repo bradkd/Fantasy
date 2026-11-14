@@ -4,3 +4,4 @@ espn_api==0.38.0
 pandas==3.0.6
 numpy==2.5.4
 scipy==1.18.1
+requests==2.34.2
